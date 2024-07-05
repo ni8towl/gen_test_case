@@ -28,7 +28,7 @@ def determine_DUT(signal_addresses: list, test_mode: bool) -> str:
     # Regex search for CILO, random number and EnaCls as it is specific to DUT
     # Find the signal that contains "CILO"
     if not test_mode:
-        pattern = r"(CILO\d+)\.EnaCls"
+        pattern = r"(CILO)"
         for address in signal_addresses:  # Iterate through all addresses
 
             match = re.search(pattern, address)  # Search for the pattern
@@ -65,20 +65,29 @@ def get_namespaces(file_path):
 
 def get_parent(root, namespaces, DUT) -> Union[str, list]:
     ieds = []
+    scd_addresses = []
     for ied in root.findall('.//scl:IED', namespaces):
         ied_name = ied.get('name')
         ieds.append(ied_name)
 
+    for lnode in root.findall('.//scl:LNode', namespaces):
+        ied_name = lnode.get('iedName')
+        # ieds.add(ied_name)
+        ld_inst = lnode.get('ldInst')
+        ln_class = lnode.get('lnClass')
+        ln_inst = lnode.get('lnInst')
+        scd_addresses.append(fr"{ied_name}{ld_inst}/{ln_class}{ln_inst}")
+
+
     # Iterate through the IEDs and determine if the IED name is contained in the DUT name
     parent = next((ied for ied in ieds if ied in DUT))
-    return parent, ieds
+    return parent, ieds, scd_addresses
 
 
 def sort_signal_adresses(signal_addresses, dut) -> list:
     # Sort elements in list based on whether DUT is in the address
     # False < True in python, so dut will appear last as they will return true
     dut_last = sorted(signal_addresses, key=lambda address: dut in address)
-    
     # get the index of the CILO LN in the list
     index = [idx for idx, s in enumerate(dut_last) if 'CILO' in s][0]
 
@@ -117,7 +126,7 @@ def get_test_steps(excel_file: str, test_steps_sheet: str) -> pd.DataFrame:
 
 
 def get_switch_positions(test_steps) -> Tuple[pd.DataFrame, int]:
-    """Skip first two rows to get rid of numbering and assessments, skip last row to get rid of commands.
+    """Skip first two rows of Excel sequence to get rid of numbering and assessments, skip last row to get rid of commands.
     Select from column 2 onwards to only get positions"""
     switch_positions = test_steps.iloc[2:-1, 2:]
 
@@ -170,15 +179,15 @@ def create_FAT_json(version: float, test_name: str, dut_name: str, group_types: 
 
     # Create parameters for test
     ilo_FAT['testCases'].append({"name": str(test_name),
-                                "autoSetControlValues": True,
-                                 "autoAssess": True,
-                                 "assessmentLockoutTime": 1.5,
-                                 "autoAssessTimeout": 1.5,
-                                 "switchOperationTime": 1.5,
-                                 "parent": str(dut_name),
-                                 "signalGroups": [],
-                                 "testSteps": []
-                                 })
+    "autoSetControlValues": True,
+    "autoAssess": True,
+    "assessmentLockoutTime": 1.5,
+    "autoAssessTimeout": 1.5,
+    "switchOperationTime": 1.5,
+    "parent": str(dut_name),
+    "signalGroups": [],
+    "testSteps": []
+    })
 
     # Create CONTROL, ASSESS and COMMAND signal groups and associated LNs
     for key, value in group_types.items():
@@ -204,29 +213,29 @@ def create_FAT_json(version: float, test_name: str, dut_name: str, group_types: 
             # Everything is ordered, except for the first step
             # The expected values are added to the JSON. The last value is a commandResult, the second to last is the assessment
             ilo_FAT['testCases'][0]['testSteps'].append({"description": "",
-                                                         "ordered": (False if step <= 0 else True),
-                                                         "expected": [{"signalRef": ln, "value": step0_vals[step][j]} if j != len(signal_addresses)-1
-                                                                      else {"signalRef": ln, "commandResult": step0_vals[step][j]}
-                                                                      for j, ln in enumerate(signal_addresses)]})
+            "ordered": (False if step <= 0 else True),
+            "expected": [{"signalRef": ln, "value": step0_vals[step][j]} if j != len(signal_addresses)-1
+            else {"signalRef": ln, "commandResult": step0_vals[step][j]}
+            for j, ln in enumerate(signal_addresses)]})
 
         # If the circuit breaker is closing, the order of the switching operations, should ensure that disconnectors close before the circuit breaker
         elif cb_closing:
-            print(f'{step} CLOSING')
+            # print(f'{step} CLOSING')
             # the switching signals and the LNs are sorted appropriately
             LNs_signals_closing = sort_switch_order(LNs_signal, 'closing')
-            # The dictionary is "transposed" to get the all expected values for the current step for the different LNs
+            # The dictionary is "transposed" to get all expected values for the current step for the different LNs
             closing_vals = get_expected_vals(LNs_signals_closing)
 
             # First step can follow the order of the Excel test file, as changes between two steps can't be defined here
             ilo_FAT['testCases'][0]['testSteps'].append({"description": "",
-                                                         "ordered": (False if step <= 0 else True),
-                                                         "expected": [{"signalRef": ln, "value": closing_vals[step][j]} if j != len(signal_addresses)-1
-                                                                      else {"signalRef": ln, "commandResult": closing_vals[step][j]}
-                                                                      for j, ln in enumerate(LNs_signals_closing)]})
+            "ordered": (False if step <= 0 else True),
+            "expected": [{"signalRef": ln, "value": closing_vals[step][j]} if j != len(signal_addresses)-1
+            else {"signalRef": ln, "commandResult": closing_vals[step][j]}
+            for j, ln in enumerate(LNs_signals_closing)]})
 
         # If the circuit breaker is opening, the order of the switching operations, should ensure that the circuit breaker opens before the disconnectors
         elif cb_opening:
-            print(f'{step} OPENING')
+            # print(f'{step} OPENING')
             LNs_signals_opening = sort_switch_order(LNs_signal, 'opening')
             opening_vals = get_expected_vals(LNs_signals_opening)
 
@@ -238,7 +247,7 @@ def create_FAT_json(version: float, test_name: str, dut_name: str, group_types: 
                                                                       for j, ln in enumerate(LNs_signals_opening)]})
 
         elif cb_unchanged:
-            print(f'{step} UNCHANGED')
+            # print(f'{step} UNCHANGED')
             # If CB states do not change, keep the order.
             ilo_FAT['testCases'][0]['testSteps'].append({"description": "",
                                                          "ordered": (False if step <= 0 else True),
@@ -252,31 +261,41 @@ def create_FAT_json(version: float, test_name: str, dut_name: str, group_types: 
     return ilo_FAT
 
 
-# test_sequence_file = "7-Interlocking Q01_QB1 Close.xlsx"
-test_sequence_file = "Expanded_test.xlsx"
+test_sequence_file = "7-Interlocking Q01_QB1 Close.xlsx"
+# test_sequence_file = "Expanded_test.xlsx"
 
 signal_addresses = get_signal_addresses(
     excel_file=test_sequence_file, signal_addresses_sheet="Signal Addresses")
 
 dut = determine_DUT(signal_addresses, test_mode=False)
-print(dut)
+
 scd_file = "5.1-20230131_NUCBX1.scd"
 
 root = get_root(scd_file)
 namespaces = get_namespaces(scd_file)
-parent, ieds = get_parent(root, namespaces, dut)
+parent, ieds, scd_addresses = get_parent(root, namespaces, dut)
 
 # compare the list of ieds from the SCD file with the list of ieds
 # from the signal addresses and extract only the ones used.
-bay_ieds = [ied for ied in ieds if any(
-    ied in signal for signal in signal_addresses)]
+# bay_ieds = [ied for ied in ieds if any(
+#     ied in signal for signal in signal_addresses)]
+
 
 signal_addresses = sort_signal_adresses(signal_addresses, dut)
+
+# Check if all signal addresses are contained in the list of scd addresses
+signal_addresses_check = [signal_address.split(".")[0] for signal_address in signal_addresses]
+signal_addresses_check = ["Some_wrong_address", "AA1D1Q01Q1QA1/CSWI1", "AA1D1Q01Q1QB1/CILO1"]
+if all(signal_address in scd_addresses for signal_address in signal_addresses_check):
+    print("All signal addresses are contained in the SCD")
+else:
+    raise Exception("Not all signal addresses are contained in the SCD")
 
 group_types = create_group_types(signal_addresses, dut, test_mode=False)
 
 test_steps = get_test_steps(
     excel_file=test_sequence_file, test_steps_sheet="Test Steps")
+
 switch_positions, num_test_steps = get_switch_positions(test_steps)
 
 # Get the value from the second row, from column two onwards
@@ -287,13 +306,16 @@ assessment_row = np.insert(assessment_row, 0, True)
 # Change index to match the group
 switch_positions.index = group_types["CONTROL"]
 
+# If Excel file containing test steps says OPEN or CLOSED change it to POS_ON/POS_OFF
 switch_positions.replace("CLOSED", "POS_ON", inplace=True, regex=True)
+switch_positions.replace("closed", "POS_ON", inplace=True, regex=True)
 switch_positions.replace("OPEN", "POS_OFF", inplace=True, regex=True)
+switch_positions.replace("open", "POS_OFF", inplace=True, regex=True)
 # Add initial step where everything is opened
 switch_positions.insert(0, 0, "POS_OFF")
 
 # The circuit breakers have the signal addresses that contain either QA+any digit or XCBR
-circuit_breakers = [x for x in switch_positions.index if re.match(r"QA\d", x) or ("XCBR" in x)]
+circuit_breakers = [x for x in switch_positions.index if re.search(r"QA\d", x) or ("XCBR" in x)]
 
 # Get the states of the circuit breakers
 bay1_cb_states = switch_positions.loc[circuit_breakers[0]].values.flatten()
@@ -326,7 +348,7 @@ val_assess_cmd = np.vstack([switch_positions, assessment_row, command_row])
 LNs_signal = dict(zip(signal_addresses, val_assess_cmd))
 
 # Name of generated JSON file
-file_name = "Expanded_Test_Case_Ver5"
+file_name = "FAT_Q01_QB1_Close_SIGNALADDRESSES"
 
 # Run the function to create the JSON file
 json_structure = create_FAT_json(version=1.1, test_name=file_name,
