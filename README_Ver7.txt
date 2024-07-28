@@ -2,7 +2,7 @@
 
 Steps to use:
 
-1) run Truth_Table.py to create permutations of 'test steps'. Modify formula of interlocking logic here as required. 
+1) run Truth_Table.py to create permutations of 'test steps'. Modify formula of interlocking logic here as required. Output of this code will be a csv which you can use to manually create 'test steps' in Expanded_test1.xlsx.
 
 2) Example input file with 'test steps' generated in 1) is provided: Expanded_test1.xlsx
 
