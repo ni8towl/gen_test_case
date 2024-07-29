@@ -1,11 +1,20 @@
-# Automatic Generation of Interlocking Tests for Digital Substation for Integration With StationScout
+# Usng Generate_Test_Case_Ver7.py
 
- For testing an input file of test steps is provided: 7-Interlocking Q01_QB1 Close copy.xlsx
+Generate_Test_Case_Ver7.py comes with a GUI, select your own signal list and scl file. 
+Also, permutations of test steps can be generated automatically by using Truth_Table.py.   
 
-This file comes with a description of which signal addresses belong to which group types and is therefore suitable for "Generate_test_case_import_groupT.py" and "GUI_test.py". 
+Steps to use:
 
-For using the more automatic version, "Generate_Test_Case_Ver5.py", that automatically extracts the group types, please test it using the other Excel file provided "Expanded_test.xlsx", as this one does not contain the group type information.
+1) Run Truth_Table.py to create permutations of 'test steps'. Modify formula of interlocking logic here as required. 
+Output of this code will be a out.csv
+Example of manual changes needed can be seen in example out1.csv. Change TRUE and FALSE values to OPEN and CLOSED as needed. 
 
-The SCD file provided is compatible with all the scripts.
+2) Manually create your test steps in Expanded_test1.xlsx 'Test Steps' tab by copying the values from out1.csv.
 
-###### Full error handling is yet to be implemented.     
+3)  Run Generate_Test_Case_Ver7.py using provided: Expanded_test1.xlsx
+
+4) Use associated SCL file: 5.1-20230131_NUCBX1.scd
+
+5) Choose a name for you .json file.
+
+6) Import Json file into StationScout (Tested with version 2.40 successfully).
