@@ -6,7 +6,7 @@ This is a proof of concept and limited to 6 inputs and 1 out for creating a logi
 
 # Steps to follow:
 
-1) Run Truth_Table1.1.py to create permutations of 'test steps'. Modify formula of interlocking logic here as required. 
+1) Run Truth_Table_1.1.py to create permutations of 'test steps'. Modify formula of interlocking logic here as required. 
 Output of this code will be a "output_file_transposed.xlsx"
 
 2) Copy the test steps created in "output_file_transposed.xlsx" and paste them in "Expanded_test1.1.xlsx" under the "Test Steps" tab. Copy the values in the yellow section.
