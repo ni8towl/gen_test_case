@@ -1,6 +1,6 @@
 # Generate Test Cases in StationScout (Ver7.1)
 
-Generate_Test_Case_Ver7.1.py comes with a GUI, select your own signal list and scl file. 
+This version comes with a GUI, select your own signal list and scl file. 
 Also, permutations of test steps can be generated automatically.
 This is a proof of concept and limited to 6 inputs and 1 out for creating a logic test. Expand for your system as required. 
 
