@@ -1,20 +1,17 @@
-# Usng Generate_Test_Case_Ver7.py
+# Generate Test Cases in StationScout_Ver7.1
 
-Generate_Test_Case_Ver7.py comes with a GUI, select your own signal list and scl file. 
-Also, permutations of test steps can be generated automatically by using Truth_Table.py.   
+Generate_Test_Case_Ver7.1.py comes with a GUI, select your own signal list and scl file. 
+Also, permutations of test steps can be generated automatically by using Truth_Table1.1.py.   
 
 Steps to use:
 
-1) Run Truth_Table.py to create permutations of 'test steps'. Modify formula of interlocking logic here as required. 
-Output of this code will be a out.csv
-Example of manual changes needed can be seen in example out1.csv. Change TRUE and FALSE values to OPEN and CLOSED as needed. 
+1) Run Truth_Table1.1.py to create permutations of 'test steps'. Modify formula of interlocking logic here as required. 
+Output of this code will be a "output_file_transposed.xlsx"
 
-2) Manually create your test steps in Expanded_test1.xlsx 'Test Steps' tab by copying the values from out1.csv.
+2) Copy the test steps created in "output_file_transposed.xlsx" and paste them in "Expanded_test1.1.xlsx" under the "Test Steps" tab. Copy the values in the yellow section.
 
-3)  Run Generate_Test_Case_Ver7.py using provided: Expanded_test1.xlsx
+3)  Run Generate_Test_Case_Ver7.1.py using in the GUI: "Expanded_test1.1.xlsx" and associated SCL file "5.1-20230131_NUCBX1.scd"
 
-4) Use associated SCL file: 5.1-20230131_NUCBX1.scd
+4) Choose a name for you .json file.
 
-5) Choose a name for you .json file.
-
-6) Import Json file into StationScout (Tested with version 2.40 successfully).
+5) Import Json file into StationScout (Tested with version 2.40 successfully).
