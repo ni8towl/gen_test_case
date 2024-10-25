@@ -15,4 +15,4 @@ Output of this code will be a "output_file_transposed.xlsx"
 
 4) Choose a name for you .json file.
 
-5) Import Json file into StationScout (Tested with version 2.40 successfully).
+5) Import Json file into StationScout (Tested with version StationScout 2.40 successfully).
