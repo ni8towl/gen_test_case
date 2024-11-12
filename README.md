@@ -6,7 +6,7 @@ This is a proof of concept and limited to 6 inputs and 1 out for creating a logi
 
 # Steps to follow:
 
-1) Run Generate_Test_Case_Ver7.3.py. Enter in the GUI your Input logic which will generate a truth table of all the permutations.
+1) Run Generate_Test_Case_Ver7.4.py. Enter in the GUI your Input logic which will generate a truth table of all the permutations.
 
 2) Select the .xlsx file you want to copy the Test Steps to. 
 
