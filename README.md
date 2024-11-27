@@ -14,4 +14,4 @@ This is a proof of concept and limited to 6 inputs and 1 out for creating a logi
 
 4) Choose a name for you .json file.
 
-5) Import Json file into StationScout (Tested with version StationScout 2.40 successfully).
+5) Import Json file into StationScout (Tested with version StationScout 3.00 successfully).
