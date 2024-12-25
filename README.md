@@ -1,17 +1,15 @@
-# Generate Test Cases in StationScout (Ver7.4)
+# Generate Test Cases in StationScout (Ver8.00)
 
 This version comes with a GUI. 
 Using your substation automation logic, signal list and scl file create all the permutations of test steps automatically.
-This is a proof of concept and limited to 6 inputs and 1 out for creating a logic test. Expand for your system as required. 
 
 # Steps to follow:
 
-1) Run Generate_Test_Case_Ver7.4.py. Enter in the GUI your Input logic which will generate all the Test Steps permutations.
-
-2) Select the .xlsx file you want to copy the Test Steps to. You can use the example provided: "Expanded_test1.4.xlsx" 
-
-3) Select your signal list.xlsx and SCL file. You can use the examples provided: "Expanded_test1.4.xlsx" and associated SCL file "5.1-20230131_NUCBX1.scd"
-
-4) Choose a name for you .json file.
-
-5) Import Json file into StationScout (Tested with version StationScout 3.00 successfully).
+1) Fill in the 'Signal Addresses' tab in the spreadsheet provided with your signal list.  You can use the example provided: "Example_test1.6.xlsx" 
+2) Run Generate_Test_Case_Ver_8.00.py. Keep all files provided in the same folder.
+3) Select the number of inputs.
+4) Decide if the test is for any Single Point Status (True/False) values or for switchgear (Open/CLOSED)
+5) Select the ##.xlsx file you want to copy the Test Steps to.
+6) Select your ##.xlsx and SCL file. You can use the examples provided.
+7) Choose a name for you .json file.
+8) Import Json file into StationScout (Tested with version StationScout 3.00 successfully).
