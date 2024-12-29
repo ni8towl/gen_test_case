@@ -13,5 +13,5 @@ Using your substation automation logic, signal list and scl file create all the 
 6) Decide if the test is for any Single Point Status (True/False) values or for switchgear (Open/CLOSED)
 7) Select the ##.xlsx file you want to copy the Test Steps to.
 8) Select your ##.xlsx and SCL file. You can use the examples provided.
-9) Choose a name for you .json file.
+9) Choose a name for your .json file.
 10) Import Json file into StationScout (Tested with version StationScout 3.00 successfully).
