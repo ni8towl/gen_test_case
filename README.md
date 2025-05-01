@@ -15,3 +15,7 @@ Using your substation automation logic, signal list and scl file create all the 
 8) Select your ##.xlsx and SCL file. You can use the examples provided.
 9) Choose a name for your .json file.
 10) Import Json file into StationScout (Tested with version StationScout 3.00 successfully).
+
+# Video Demo
+
+https://youtu.be/vj9r4vC3_tg?si=70dQa469DMKG4yN9
