@@ -18,6 +18,7 @@ Also, using a signal list in excel and SCD file create all the permutations of t
 10) Choose a name for your .json file.
 11) Import Json file into StationScout (Tested with version StationScout 3.00 successfully).
 
-# Video Demo (How to use without IEC 61131-3)
+# Video Demo
 
 https://youtu.be/vj9r4vC3_tg?si=70dQa469DMKG4yN9
+(How to use without IEC 61131-3)
